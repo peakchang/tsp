@@ -19,18 +19,38 @@
             link: "/admin",
         },
         {
-            icon: '<i class="fa-solid fa-money-bill"></i>',
+            icon: '<i class="fa-solid fa-user-check"></i>',
+            name: "회원관리",
+            link: "/admin/user",
+        },
+        {
+            icon: '<i class="fa-solid fa-chart-line"></i>',
+            name: "접속자집계",
+            link: "/admin/user",
+        },
+        {
+            icon: '<i class="fa-solid fa-layer-group"></i>',
+            name: "후기관리",
+            link: "/admin/user",
+        },
+        {
+            icon: '<i class="fa-solid fa-money-check"></i>',
             name: "요금제관리",
             link: "/admin/yogmanage",
         },
         {
-            icon: '<i class="fa-solid fa-square-phone-flip"></i>',
+            icon: '<i class="fa-solid fa-chart-simple"></i>',
             name: "공시 관리",
             link: "/admin/gongsi",
         },
         {
             icon: '<i class="fa-solid fa-sitemap"></i>',
             name: "상품 관리",
+            link: "/admin/item",
+        },
+        {
+            icon: '<i class="fa-solid fa-user-gear"></i>',
+            name: "접수 내역",
             link: "/admin/item",
         },
     ];
@@ -40,7 +60,7 @@
 
     $: {
         console.log($page.url.pathname);
-        auth_chk();
+        // auth_chk();
     }
     $: {
         if (innerWidth < 980) {

@@ -4,7 +4,7 @@
 </script>
 
 <div
-    class="fixed left-0 top-0 h-screen border-r-2 bg-gray-100 suit-font pt-16 side"
+    class="fixed left-0 top-0 h-screen border-r-2 bg-gray-100 suit-font pt-16 side z-40"
     class:hide-side={$pc_sidebar}
 >
     <ul class="text-left mt-6 pl-3">

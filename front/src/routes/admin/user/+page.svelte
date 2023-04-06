@@ -1,4 +1,5 @@
 <script>
+    import { pc_sidebar } from "$lib/store";
     import axios from "axios";
     let getUsers = get_users();
     let inputChk = [];
@@ -64,7 +65,7 @@
     };
 </script>
 
-<div class="pt-24 container mx-auto suit-font px-2">
+<div class="suit-font px-2 pt-16" class:pl-44={!$pc_sidebar}>
     <!--Console Content-->
     <div class="mb-3 pt-5 pl-3">
         <button
