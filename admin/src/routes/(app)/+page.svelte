@@ -1,7 +1,8 @@
 <script>
     import axios from "axios";
     import { onMount, beforeUpdate } from "svelte";
-    import { admin_sidebar,pc_sidebar } from "$lib/store";
+    import { admin_sidebar, pc_sidebar } from "$front_lib/store";
+    import FixedButton from "$components/FixedButton.svelte";
 
     let site_info = get_site_info();
     let site_company;
@@ -51,20 +52,26 @@
             console.log(error.message);
         }
     }
+
+    const testUpdate = (e) => {
+        console.log('asdjflaisjdf');
+        console.log(e.detail);
+    }
+
+    let choice_btn = ['업데이트']
 </script>
 
-<div class="suit-font px-2 pt-10" class:pl-44={!$pc_sidebar}>
-    <div class="pt-5 pb-2">
-        <button
-            class="border border-blue-600 px-4 rounded-lg py-1 bg-blue-600 text-white"
-            on:click={updateSiteInfo}>변경 적용</button
-        >
-    </div>
+<FixedButton on:update={testUpdate} {choice_btn} />
+
+
+
+<div class="suit-font px-2 pt-28 text-xs" class:pl-44={!$pc_sidebar}>
+    <div class="pt-5 pb-2" />
 
     {#await site_info}
         <div>waite.....</div>
     {:then val}
-        <table class="w-full table border-collapse text-xs md:text-base">
+        <table class="w-full table border-collapse text-xs md:text-sm">
             <tr>
                 <th class="border border-slate-400 py-1">회사명</th>
                 <td class="border border-slate-400 py-1">
@@ -173,8 +180,5 @@
                 </td>
             </tr>
         </table>
-    {/await} 
-
-
-    
+    {/await}
 </div>

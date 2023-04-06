@@ -2,10 +2,19 @@
     import "$node_modules/@fortawesome/fontawesome-free/css/all.min.css";
     import "$src/app.css";
     import { page } from "$app/stores";
-    import { auth_chk } from "$lib/lib";
+    import { auth_chk } from "$front_lib/lib";
 
-    import MenuBar from "./MenuBar.svelte";
-    import { admin_sidebar, pc_sidebar, mobile_sidebar } from "$lib/store";
+    import MenuBar from "$components/MenuBar.svelte";
+    import {
+        admin_sidebar,
+        pc_sidebar,
+        mobile_sidebar,
+    } from "$front_lib/store";
+    console.log(
+        `import.meta.env.VITE_SERVER_URL : ${import.meta.env.VITE_SERVER_URL}`
+    );
+    console.log(import.meta.env.VITE_BUILD_LINK);
+    const buildLink = import.meta.env.VITE_BUILD_LINK;
 
     $pc_sidebar = false;
 
@@ -16,42 +25,47 @@
         {
             icon: '<i class="fa-solid fa-gear"></i>',
             name: "메인관리",
-            link: "/admin",
+            link: buildLink ? `${buildLink}` : "/",
         },
         {
             icon: '<i class="fa-solid fa-user-check"></i>',
             name: "회원관리",
-            link: "/admin/user",
+            link: `${buildLink}/user`,
         },
         {
             icon: '<i class="fa-solid fa-chart-line"></i>',
             name: "접속자집계",
-            link: "/admin/user",
+            link: `${buildLink}/visit`,
         },
         {
             icon: '<i class="fa-solid fa-layer-group"></i>',
             name: "후기관리",
-            link: "/admin/user",
+            link: `${buildLink}/review`,
+        },
+        {
+            icon: '<i class="fa-solid fa-list"></i>',
+            name: "문의관리",
+            link: `${buildLink}/inquiry`,
         },
         {
             icon: '<i class="fa-solid fa-money-check"></i>',
             name: "요금제관리",
-            link: "/admin/yogmanage",
+            link: `${buildLink}/yogmanage`,
         },
         {
             icon: '<i class="fa-solid fa-chart-simple"></i>',
             name: "공시 관리",
-            link: "/admin/gongsi",
+            link: `${buildLink}/gongsi`,
         },
         {
             icon: '<i class="fa-solid fa-sitemap"></i>',
             name: "상품 관리",
-            link: "/admin/item",
+            link: `${buildLink}/product`,
         },
         {
             icon: '<i class="fa-solid fa-user-gear"></i>',
             name: "접수 내역",
-            link: "/admin/item",
+            link: `${buildLink}/formlist`,
         },
     ];
 

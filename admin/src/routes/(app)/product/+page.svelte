@@ -1,5 +1,6 @@
 <script>
     import { pc_sidebar } from "$lib/store";
+    const buildLink = import.meta.env.VITE_BUILD_LINK
 </script>
 
 <div class="suit-font px-2 pt-16" class:pl-44={!$pc_sidebar}>
@@ -59,7 +60,8 @@
                     </td>
 
                     <td class="border border-slate-400 py-1">
-                        <a href="/admin/item/845784">
+                        <a href="{buildLink}/product/845784">
+                            
                             845784 (GO!)
                         </a>
                         

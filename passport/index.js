@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { local } from './localStrategy.js';
 import { kakao } from './kakaoStrategy.js';
-import { sql_con } from '../lib/set_db.js';
+import { sql_con } from '../lib/back_lib/set_db.js';
 
 
 

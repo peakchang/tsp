@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { sql_con } from "../lib/set_db.js";
+import { sql_con } from "../lib/back_lib/set_db.js";
 import passport from "passport";
 import { isLoggedIn, isNotLoggedIn } from "./middlewares.js"
 import request from "async-request";

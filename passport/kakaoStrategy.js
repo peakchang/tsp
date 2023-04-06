@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
-import { sql_con } from '../lib/set_db.js';
+import { sql_con } from '../lib/back_lib/set_db.js';
 import moment from "moment-timezone";
 moment.tz.setDefault("Asia/Seoul");
 

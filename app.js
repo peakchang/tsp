@@ -11,7 +11,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 // 최초 테이블 생성
-import { tableSetting } from './lib/set_table.js';
+import { tableSetting } from './lib/back_lib/set_table.js';
 tableSetting()
 // router 설정
 import { apiRouter } from "./routes/api.js"
@@ -53,6 +53,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/editor_img', express.static(path.join(__dirname, 'uploads/editor')));
 app.use('/on_img', express.static(path.join(__dirname, 'uploads/img')));
+app.use('/back_lib', express.static(path.join(__dirname, 'lib/back_lib')));
 // bodyParser
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());

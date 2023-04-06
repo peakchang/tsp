@@ -1,5 +1,5 @@
 <script>
-    import { pc_sidebar } from "$lib/store";
+    import { pc_sidebar } from "$front_lib/store";
     import axios from "axios";
     let getUsers = get_users();
     let inputChk = [];

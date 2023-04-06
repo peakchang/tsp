@@ -1,5 +1,5 @@
 <script>
-    import { pc_sidebar } from "$lib/store";
+    import { pc_sidebar } from "$front_lib/store";
 </script>
 
 <div class="suit-font px-2 pt-16 relative mb-28" class:pl-44={!$pc_sidebar}>

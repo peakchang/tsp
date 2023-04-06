@@ -1,5 +1,5 @@
 <script>
-    import { pc_sidebar } from "$lib/store";
+    import { pc_sidebar } from "$front_lib/store";
     let tongArr = ["전체", "SK", "KT", "LG U+"];
     let typeArr = ["전체", "일반", "키즈"];
 </script>

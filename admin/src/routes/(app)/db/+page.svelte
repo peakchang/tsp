@@ -1,7 +1,7 @@
 <script>
     import axios from "axios";
     import { onMount, beforeUpdate, tick } from "svelte";
-    import { page_set, del_arr_value } from "$lib/lib";
+    import { page_set, del_arr_value } from "$front_lib/lib";
     import { goto } from "$app/navigation";
 
     // 전체 DB count

@@ -1,5 +1,5 @@
 <script>
-    import { admin_sidebar, pc_sidebar } from "$lib/store";
+    import { admin_sidebar, pc_sidebar } from "$front_lib/store";
     export let menu_list;
 </script>
 
