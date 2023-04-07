@@ -1,15 +1,13 @@
 <script>
     import { pc_sidebar } from "$front_lib/store";
+    import FixedButton from "$components/FixedButton.svelte";
+    const testUpdate = () => {};
+    const choice_btn = ["업데이트"];
 </script>
 
-<div class="suit-font px-2 pt-16 relative mb-28" class:pl-44={!$pc_sidebar}>
-    <div class="absolute right-0 top-12 w-full text-right">
-        <button
-            class="border border-emerald-700 bg-emerald-700 px-4 py-1 rounded-md text-white ml-3 my-3 mr-10"
-        >
-            수정완료
-        </button>
-    </div>
+<FixedButton on:update={testUpdate} {choice_btn} />
+<div class="suit-font px-2 pt-16 mb-28" class:pl-44={!$pc_sidebar}>
+
 
     <div class="mt-8">
         <table

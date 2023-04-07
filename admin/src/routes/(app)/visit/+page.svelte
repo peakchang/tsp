@@ -1,6 +1,8 @@
 <script>
     import { pc_sidebar } from "$front_lib/store";
     import axios from "axios";
+    
+
     let getUsers;
     let inputChk = [];
     let selected = [];
@@ -9,20 +11,11 @@
     let emailList = [];
     let inputChkTemp = [];
     let get_user = []
+    
 </script>
 
-<div class="suit-font px-2 pt-16" class:pl-44={!$pc_sidebar}>
+<div class="suit-font px-2 pt-20" class:pl-44={!$pc_sidebar}>
     <!--Console Content-->
-    <div class="mb-3 pt-5 pl-3">
-        <button
-            class="border border-red-600 px-4 py-1 rounded-xl bg-red-600 text-white text-sm"
-            value="delete">선택삭제</button
-        >
-        <button
-            class="border border-indigo-500 px-4 py-1 rounded-xl bg-indigo-500 text-white text-sm"
-            value="update">업데이트</button
-        >
-    </div>
 
     <table class="table border-collapse w-full text-center rounded-xl" style="font-size: 8px;">
         <tr class="bg-slate-200">

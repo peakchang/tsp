@@ -1,35 +1,14 @@
 <script>
     import { pc_sidebar } from "$lib/store";
-    const buildLink = import.meta.env.VITE_BUILD_LINK
+    const buildLink = import.meta.env.VITE_BUILD_LINK;
+    import FixedButton from "$components/FixedButton.svelte";
+    const testUpdate = () => {};
+    const choice_btn = ["선택수정", "선택삭제", "상품추가","상품복사"];
 </script>
 
-<div class="suit-font px-2 pt-16" class:pl-44={!$pc_sidebar}>
-    <div>
-        <div class="flex flex-wrap">
-            <button
-                class="border border-blue-700 bg-blue-700 px-4 py-1 text-sm rounded-md text-white ml-3"
-            >
-                상품추가
-            </button>
-            <button
-                class="border border-emerald-700 bg-emerald-700 px-4 py-1 text-sm rounded-md text-white ml-3"
-            >
-                선택수정
-            </button>
+<FixedButton on:update={testUpdate} {choice_btn} />
 
-            <button
-                class="border border-red-700 bg-red-700 px-4 py-1 text-sm rounded-md text-white ml-3"
-            >
-                선택삭제
-            </button>
-
-            <button
-                class="border border-pink-700  bg-pink-700 px-4 py-1 text-sm rounded-md text-white ml-3"
-            >
-                상품복사
-            </button>
-        </div>
-    </div>
+<div class="suit-font px-2 pt-24" class:pl-44={!$pc_sidebar}>
 
     <div class="table_wrap mt-3">
         <div class="table_area">
@@ -60,18 +39,16 @@
                     </td>
 
                     <td class="border border-slate-400 py-1">
-                        <a href="{buildLink}/product/845784">
-                            
-                            845784 (GO!)
-                        </a>
-                        
+                        <a href="{buildLink}/product/845784"> 845784 (GO!) </a>
                     </td>
                     <td class="border border-slate-400 py-1">
                         <img src="/test11.png" alt="" class="w-14 mx-auto" />
                     </td>
                     <td class="border border-slate-400 py-1">갤럭시Z플립4</td>
                     <td class="border border-slate-400 py-1">
-                        <select class="border border-slate-400 rounded-md px-3 py-1">
+                        <select
+                            class="border border-slate-400 rounded-md px-3 py-1"
+                        >
                             <option value="SK">SK</option>
                             <option value="KT">KT</option>
                             <option value="LG U+">LG U+</option>

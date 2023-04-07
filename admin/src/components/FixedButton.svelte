@@ -24,7 +24,7 @@
         <button
             class="border border-red-700 bg-red-700 text-white py-1 px-4 rounded-md ml-2"
             on:click={() => {
-                dispatch("update");
+                dispatch("choice_del");
             }}
         >
             선택삭제
@@ -35,7 +35,7 @@
         <button
             class="border border-emerald-700 bg-emerald-700 text-white py-1 px-4 rounded-md ml-2"
             on:click={() => {
-                dispatch("update");
+                dispatch("choice_update");
             }}
         >
             선택수정
@@ -46,7 +46,7 @@
         <button
             class="border border-indigo-700 bg-indigo-700 text-white py-1 px-4 rounded-md ml-2"
             on:click={() => {
-                dispatch("update");
+                dispatch("add_item");
             }}
         >
             상품추가
@@ -57,7 +57,7 @@
         <button
             class="border border-pink-700 bg-pink-700 text-white py-1 px-4 rounded-md ml-2"
             on:click={() => {
-                dispatch("update");
+                dispatch("copy_item");
             }}
         >
             상품복사

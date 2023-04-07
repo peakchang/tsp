@@ -8,6 +8,7 @@
     let nickList = [];
     let emailList = [];
     let inputChkTemp = [];
+    import FixedButton from "$components/FixedButton.svelte";
 
     async function get_users() {
         try {
@@ -39,7 +40,7 @@
         console.log(nickList);
         console.log(emailList);
         console.log(e.target.value);
-        const updateType = e.target.value
+        const updateType = e.target.value;
         axios
             .post(
                 import.meta.env.VITE_SERVER_URL + "/user_update",
@@ -49,7 +50,7 @@
                     selected,
                     nickList,
                     emailList,
-                    updateType
+                    updateType,
                 },
                 { withCredentials: true }
             )
@@ -63,22 +64,15 @@
     const allChk = (e) => {
         inputChk = e.target.checked ? [...inputChkTemp] : [];
     };
+
+    const testUpdate = () => {};
+    const choice_btn = ["선택수정", "선택삭제"];
 </script>
 
-<div class="suit-font px-2 pt-16" class:pl-44={!$pc_sidebar}>
+<FixedButton on:update={testUpdate} {choice_btn} />
+
+<div class="suit-font px-2 pt-28" class:pl-44={!$pc_sidebar}>
     <!--Console Content-->
-    <div class="mb-3 pt-5 pl-3">
-        <button
-            class="border border-red-600 px-4 py-1 rounded-xl bg-red-600 text-white text-sm"
-            value="delete"
-            on:click={update_user}>선택삭제</button
-        >
-        <button
-            class="border border-indigo-500 px-4 py-1 rounded-xl bg-indigo-500 text-white text-sm"
-            value="update"
-            on:click={update_user}>업데이트</button
-        >
-    </div>
 
     {#await getUsers}
         <div>...loading</div>

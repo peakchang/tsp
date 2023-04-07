@@ -65,7 +65,7 @@
 
 
 
-<div class="suit-font px-2 pt-28 text-xs" class:pl-44={!$pc_sidebar}>
+<div class="suit-font px-2 pt-20 text-xs" class:pl-44={!$pc_sidebar}>
     <div class="pt-5 pb-2" />
 
     {#await site_info}
@@ -82,10 +82,7 @@
                             placeholder="회사명을 입력하세요"
                             bind:value={site_company}
                         />
-                        <button
-                            class="border border-emerald-600 px-2 md:px-4 rounded-lg py-1 bg-emerald-600 text-white"
-                            >변경</button
-                        >
+                        
                     </div>
                 </td>
             </tr>
@@ -100,10 +97,7 @@
                             placeholder="사업자 번호를 입력하세요"
                             bind:value={site_company_num}
                         />
-                        <button
-                            class="border border-emerald-600 px-2 md:px-4 rounded-lg py-1 bg-emerald-600 text-white"
-                            >변경</button
-                        >
+                        
                     </div>
                 </td>
             </tr>
@@ -118,10 +112,7 @@
                             placeholder="대표자명을 입력하세요"
                             bind:value={site_owner}
                         />
-                        <button
-                            class="border border-emerald-600 px-2 md:px-4 rounded-lg py-1 bg-emerald-600 text-white"
-                            >변경</button
-                        >
+                        
                     </div>
                 </td>
             </tr>
@@ -136,10 +127,7 @@
                             placeholder="회사 주소를 입력하세요"
                             bind:value={site_address}
                         />
-                        <button
-                            class="border border-emerald-600 px-2 md:px-4 rounded-lg py-1 bg-emerald-600 text-white"
-                            >변경</button
-                        >
+                        
                     </div>
                 </td>
             </tr>
@@ -154,10 +142,7 @@
                             placeholder="회사 전화번호를 입력하세요"
                             bind:value={site_tel}
                         />
-                        <button
-                            class="border border-emerald-600 px-2 md:px-4 rounded-lg py-1 bg-emerald-600 text-white"
-                            >변경</button
-                        >
+                        
                     </div>
                 </td>
             </tr>
@@ -172,10 +157,7 @@
                             placeholder="개인정보 책임자를 입력하세요"
                             bind:value={site_manager}
                         />
-                        <button
-                            class="border border-emerald-600 px-2 md:px-4 rounded-lg py-1 bg-emerald-600 text-white"
-                            >변경</button
-                        >
+                        
                     </div>
                 </td>
             </tr>

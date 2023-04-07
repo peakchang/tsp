@@ -1,27 +1,26 @@
 <script>
     import { pc_sidebar } from "$front_lib/store";
+    import FixedButton from "$components/FixedButton.svelte";
+    const testUpdate = () => {};
+    const choice_btn = ["선택수정", "선택삭제",'상품추가'];
 </script>
 
-<div class="suit-font px-2 pt-16" class:pl-44={!$pc_sidebar}>
+<FixedButton on:update={testUpdate} {choice_btn} />
+<div class="suit-font px-2 pt-20" class:pl-44={!$pc_sidebar}>
     <div>
         <div class="flex flex-wrap">
-
-            <select class="border border-slate-400 rounded-md px-2 text-xs md:text-sm">
+            <select
+                class="border border-slate-400 rounded-md px-2 text-xs md:text-sm"
+            >
                 <option value="">진행중 모델</option>
                 <option value="">전체 모델</option>
                 <option value="">예외 모델</option>
             </select>
 
             <button
-                class="border border-emerald-700 bg-emerald-700 px-4 py-1 text-sm rounded-md text-white ml-3"
+                class="border border-blue-700 bg-blue-700 px-4 py-1 text-sm rounded-md text-white ml-3"
             >
-                선택수정
-            </button>
-
-            <button
-                class="border border-red-700 bg-red-700 px-4 py-1 text-sm rounded-md text-white ml-3"
-            >
-                선택삭제
+                조회
             </button>
         </div>
     </div>
@@ -37,7 +36,7 @@
                     </th>
                     <th class="border border-slate-400 py-1"> 판매중 </th>
                     <th class="border border-slate-400 py-1"> 모델명 </th>
-                    
+
                     <th class="border border-slate-400 py-1">
                         SK 공시지원금
                     </th>
