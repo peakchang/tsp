@@ -2,6 +2,9 @@
     import { pc_sidebar } from "$front_lib/store";
     import FixedButton from "$components/FixedButton.svelte";
     import axios from "axios";
+    $:{
+        console.log($pc_sidebar);
+    }
     let yogAllList = getYogAllList();
     let tongArr = [
         { tongName: "전체" },

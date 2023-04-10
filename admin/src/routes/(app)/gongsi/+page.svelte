@@ -134,6 +134,7 @@
 
     const uploadExcel = () => {
         console.log(excelVal);
+        exFileVal = ''
         axios
             .post(
                 import.meta.env.VITE_SERVER_URL + "/gongsi/ex_update_gongsi",

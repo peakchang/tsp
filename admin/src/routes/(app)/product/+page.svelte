@@ -1,15 +1,23 @@
 <script>
-    import { pc_sidebar } from "$lib/store";
+    import { pc_sidebar } from "$front_lib/store";
     const buildLink = import.meta.env.VITE_BUILD_LINK;
     import FixedButton from "$components/FixedButton.svelte";
-    const testUpdate = () => {};
-    const choice_btn = ["선택수정", "선택삭제", "상품추가","상품복사"];
+    import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
+    const add_item = () => {
+        const timestamp = String(new Date().getTime());
+        console.log($page.url.pathname);
+        goto($page.url.pathname + '/' + timestamp)
+    };
+    const choice_btn = ["선택수정", "선택삭제", "상품추가", "상품복사"];
+    $: {
+        console.log($pc_sidebar);
+    }
 </script>
 
-<FixedButton on:update={testUpdate} {choice_btn} />
+<FixedButton on:add_item={add_item} {choice_btn} />
 
 <div class="suit-font px-2 pt-24" class:pl-44={!$pc_sidebar}>
-
     <div class="table_wrap mt-3">
         <div class="table_area">
             <table
@@ -41,9 +49,7 @@
                     <td class="border border-slate-400 py-1">
                         <a href="{buildLink}/product/845784"> 845784 (GO!) </a>
                     </td>
-                    <td class="border border-slate-400 py-1">
-                        <img src="/test11.png" alt="" class="w-14 mx-auto" />
-                    </td>
+                    <td class="border border-slate-400 py-1" />
                     <td class="border border-slate-400 py-1">갤럭시Z플립4</td>
                     <td class="border border-slate-400 py-1">
                         <select

@@ -1,14 +1,18 @@
 <script>
     import { pc_sidebar } from "$front_lib/store";
     import FixedButton from "$components/FixedButton.svelte";
+    import { page } from "$app/stores";
     const testUpdate = () => {};
     const choice_btn = ["업데이트"];
+    // console.log($page.url.params.slug);
+    console.log($page.params.slug);
+    const item_id = $page.params.slug;
+
+    // console.log(params);
 </script>
 
 <FixedButton on:update={testUpdate} {choice_btn} />
 <div class="suit-font px-2 pt-16 mb-28" class:pl-44={!$pc_sidebar}>
-
-
     <div class="mt-8">
         <table
             class="table border-collapse w-full text-center rounded-xl text-xs md:text-sm"
@@ -16,7 +20,7 @@
             <tr>
                 <th class="border border-slate-400 py-2 w-2/12"> 상품코드 </th>
                 <td class="border border-slate-400 py-2 text-left pl-3">
-                    8848484
+                    {item_id}
                 </td>
             </tr>
 
@@ -394,8 +398,7 @@
                 <th class="border border-slate-400 py-2 w-2/12">
                     이미지 리스트
                 </th>
-                <td class="border border-slate-400 py-2 text-left pl-3">
-                </td>
+                <td class="border border-slate-400 py-2 text-left pl-3" />
             </tr>
         </table>
     </div>
