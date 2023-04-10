@@ -8,7 +8,6 @@ moment.tz.setDefault("Asia/Seoul");
 
 const boardRouter = express.Router();
 
-
 const upload = multer({
     storage: multer.diskStorage({
         // 경로를 설정
@@ -16,6 +15,13 @@ const upload = multer({
             console.log('일단 폴더 체크 부터!!!');
             const now = moment().format('YYMMDD')
             console.log(now);
+
+            try {
+                fs.readdirSync(`uploads`);
+            } catch (error) {
+                fs.mkdirSync(`uploads`);
+            }
+
             try {
                 fs.readdirSync(`uploads/editor`);
             } catch (error) {
@@ -75,6 +81,13 @@ const upload_on = multer({
             console.log('일단 폴더 체크 부터!!!');
             const now = moment().format('YYMMDD')
             console.log(now);
+
+            try {
+                fs.readdirSync(`uploads`);
+            } catch (error) {
+                fs.mkdirSync(`uploads`);
+            }
+
             try {
                 fs.readdirSync(`uploads/img`);
             } catch (error) {
@@ -102,6 +115,19 @@ boardRouter.post('/img_uploads', upload_on.single('onimg'), (req, res, next) => 
     var baseUrl = req.protocol + '://' + req.get('host') + '/on_img/img' + now + '/' + req.file.filename;
     var getFolder = `uploads/img/img${now}`;
     res.json({ baseUrl, getFolder })
+})
+boardRouter.post('/delete_img', async (req, res, next) => {
+    console.log(req.body);
+
+    var getFileUrl = `uploads/img/${req.body.getFolder}/${req.body.getImgName}`;
+    fs.unlink(getFileUrl, err => {
+        console.log(err);
+    });
+
+})
+
+boardRouter.post('/list_img_uploads', upload_on.single('onimg'), (req, res, next) => {
+    
 })
 
 

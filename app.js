@@ -26,7 +26,6 @@ import { qaRouter } from "./routes/qa_set.js"
 import { reviewRouter } from './routes/review_set.js';
 import { yogRouter } from './routes/yog_set.js';
 
-
 // svelte build 파일 불러오기
 import { handler } from "./front/build/handler.js"
 
@@ -100,8 +99,8 @@ app.use(passport.session());
 let corsOptions = {
     // 여기는 svelte (프론트엔드) 가 돌아가는 주소
     // origin: '*',
-    // origin: 'http://localhost:5173',
-    origin: 'http://127.0.0.1:5173',
+    origin: 'http://localhost:5173',
+    // origin: 'http://127.0.0.1:5173',
     credentials: true
 }
 app.use(cors(corsOptions));
@@ -120,6 +119,8 @@ app.use('/api/v4/order', orderRouter);
 app.use('/api/v4/qa', qaRouter);
 app.use('/api/v4/review', reviewRouter);
 app.use('/api/v4/yog', yogRouter);
+
+
 
 
 app.use(handler);
