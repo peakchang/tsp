@@ -4,7 +4,7 @@
     export let choice_btn;
 </script>
 
-<div class="fixed right-0 top-14 z-50 pr-5 text-sm suit-font">
+<div class="fixed right-0 top-14 z-30 pr-5 text-sm suit-font">
     {#if choice_btn.includes("업데이트")}
         <button
             class="border border-blue-700 bg-blue-700 text-white py-1 px-4 rounded-md ml-2"
@@ -13,7 +13,7 @@
                 let gogogogo = 'saldjflasjdf'
                 let result = testval + gogogogo
                 dispatch("update", { result: result });
-            }}
+0            }}
         >
             업데이트
         </button>

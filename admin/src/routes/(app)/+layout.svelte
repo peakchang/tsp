@@ -149,7 +149,7 @@
     </button>
 
     <button
-        class="text-2xl text-white inline-block float-right relative md:hidden"
+        class="text-2xl text-white inline-block float-right relative z-auto md:hidden"
         use:mobile_sidebar_toggle
     >
         <i class="fa-solid fa-burger" />
