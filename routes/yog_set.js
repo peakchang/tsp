@@ -62,6 +62,7 @@ yogRouter.post('/update_yog', async (req, res, next) => {
         const pyName = req.body.py_name;
         const pyTong = req.body.py_tong;
         const pyCall = req.body.py_call;
+        const pyData = req.body.py_data;
         const pyFee = req.body.py_fee;
         const pySms = req.body.py_sms;
         const pySeq = req.body.py_seq;
@@ -73,8 +74,8 @@ yogRouter.post('/update_yog', async (req, res, next) => {
             console.log(updateNum);
             console.log(pyName[updateNum]);
             console.log(pyFee[updateNum]);
-            const updateYogSql = "UPDATE ph_yog SET py_name =?, py_tong =?, py_call =?, py_fee =?, py_sms =?, py_seq =?, py_addinfo =?, py_type =? WHERE py_num =?";
-            await sql_con.promise().query(updateYogSql, [pyName[updateNum], pyTong[updateNum], pyCall[updateNum], pyFee[updateNum], pySms[updateNum], pySeq[updateNum], pyAddinfo[updateNum], pyType[updateNum], pyNum[updateNum]]);
+            const updateYogSql = "UPDATE ph_yog SET py_name =?, py_tong =?, py_call =?, py_fee =?, py_sms =?, py_data=?, py_seq =?, py_addinfo =?, py_type =? WHERE py_num =?";
+            await sql_con.promise().query(updateYogSql, [pyName[updateNum], pyTong[updateNum], pyCall[updateNum], pyFee[updateNum], pySms[updateNum], pyData[updateNum], pySeq[updateNum], pyAddinfo[updateNum], pyType[updateNum], pyNum[updateNum]]);
         }
         return res.json({ message: 'yog 업데이트 성공' })
     } catch (error) {
@@ -85,6 +86,22 @@ yogRouter.post('/update_yog', async (req, res, next) => {
 
 })
 
+
+yogRouter.post('/upload_excel', async (req, res, next) => {
+    console.log(req.body);
+    for await (const yogInfo of req.body) {
+        console.log(yogInfo);
+        const exPyChkSql = "SELECT * FROM ph_yog WHERE py_name =?";
+        const exPyChk = await sql_con.promise().query(exPyChkSql, [yogInfo.py_name]);
+        if (exPyChk[0][0]) {
+            const exPyUpdateSql = "UPDATE ph_yog SET py_name =?, py_tong =?, py_call =?, py_fee =?, py_sms =?, py_data=?, py_type =?, py_seq=?,py_addinfo=? WHERE py_name =?";
+            await sql_con.promise().query(exPyUpdateSql, [yogInfo.py_name, yogInfo.py_tong, yogInfo.py_call, yogInfo.py_fee, yogInfo.py_sms, yogInfo.py_data, yogInfo.py_type, yogInfo.py_seq, yogInfo.py_addinfo, yogInfo.py_name]);
+        } else {
+            const exPyInsertSql = "INSERT INTO ph_yog (py_name, py_tong, py_call, py_fee, py_sms, py_data, py_type, py_seq,py_addinfo) VALUES (?,?,?,?,?,?,?,?,?)";
+            await sql_con.promise().query(exPyInsertSql, [yogInfo.py_name, yogInfo.py_tong, yogInfo.py_call, yogInfo.py_fee, yogInfo.py_sms, yogInfo.py_data, yogInfo.py_type, yogInfo.py_seq, yogInfo.py_addinfo]);
+        }
+    }
+})
 
 
 export { yogRouter }

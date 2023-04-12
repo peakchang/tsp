@@ -7,9 +7,10 @@
     let editor;
     let imgArr = [];
     let getFolder = "";
+    let editorContent;
+    let quill;
 
     export let modifyVal;
-    console.log(modifyVal);
 
     onMount(async () => {
         const { default: Quill } = await import("quill");
@@ -17,7 +18,7 @@
         img_fomat.className = "inline-block";
         Quill.register(img_fomat, true);
 
-        let quill = new Quill(editor, {
+        quill = new Quill(editor, {
             modules: {
                 toolbar: {
                     container: [
@@ -118,11 +119,17 @@
         }
 
         // 글 수정시
-        const editorContent = editor.querySelector(".ql-editor");
-        console.log(editorContent);
+        const editorContentWrap = editor.querySelector(".ql-editor");
 
-        const template = modifyVal
-        editorContent.innerHTML = template;
+        const template = modifyVal;
+        if (template) {
+            editorContentWrap.innerHTML = template;
+        }
+
+        quill.on("text-change", function (delta, source) {
+            editorContent = updateHtmlOutput();
+            dispatch("getEditorContent", { editorContent });
+        });
     });
 
     const dataURItoBlob = (dataURI) => {
@@ -136,34 +143,24 @@
         for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
         return new Blob([ia], { type: mime });
     };
+
+    function getQuillHtml() {
+        return quill.root.innerHTML;
+    }
+
+    function updateHtmlOutput() {
+        let html = getQuillHtml();
+        return html;
+    }
 </script>
 
 <div class="main_container">
     <div class="editor-wrapper">
         <div bind:this={editor} />
     </div>
-
-    <div>
-        <button
-            on:click={() => {
-                const editorContent = editor.querySelector(".ql-editor");
-                const allContent = editorContent.innerHTML;
-                if (allContent == `<p><br></p>`) {
-                    alert("내용을 입력하세요");
-                    return;
-                }
-                let delArr = [];
-                for (let i = 0; i < imgArr.length; i++) {
-                    if (!allContent.includes(imgArr[i])) {
-                        delArr.push(imgArr[i]);
-                    }
-                }
-                dispatch("editorUpdate", { allContent, delArr });
-            }}>완료완료</button
-        >
-    </div>
 </div>
 
 <style>
+    
     @import "https://cdn.quilljs.com/1.3.6/quill.snow.css";
 </style>

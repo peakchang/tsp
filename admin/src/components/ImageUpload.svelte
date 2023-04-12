@@ -11,11 +11,15 @@
     let imgUrlArr = [];
     let listsEl;
     let sortableLists;
-    export let modifyVal;
+    export let modifyImageList;
+    export let outUpload;
+    export let maxImgCount;
+    console.log(outUpload);
+    console.log(maxImgCount);
 
     onMount(() => {
-        if (modifyVal) {
-            imgUrlArr = JSON.parse(modifyVal);
+        if (modifyImageList) {
+            imgUrlArr = JSON.parse(modifyImageList);
         }
         // For Lists
         sortableLists = new Sortable(listsEl, {
@@ -29,8 +33,7 @@
                 const clone = _cloneDeep(imgUrlArr[event.oldIndex]);
                 imgUrlArr.splice(event.oldIndex, 1);
                 imgUrlArr.splice(event.newIndex, 0, clone);
-
-                console.log(imgUrlArr);
+                imgUrlArr = [...new Set(imgUrlArr)];
             },
         });
     });
@@ -89,27 +92,24 @@
                 imgForm.append("onimg", resultImage, fileName);
 
                 // FormData의 key 값과 value값 찾기
-                let keys = imgForm.keys();
-                for (const pair of keys) {
-                    console.log(`name : ${pair}`);
-                }
+                // let keys = imgForm.keys();
+                // for (const pair of keys) {
+                //     console.log(`name : ${pair}`);
+                // }
 
-                let values = imgForm.values();
-                for (const pair of values) {
-                    console.log(`value : ${pair}`);
-                }
+                // let values = imgForm.values();
+                // for (const pair of values) {
+                //     console.log(`value : ${pair}`);
+                // }
                 axios
                     .post(
                         import.meta.env.VITE_SERVER_URL + "/board/img_uploads",
                         imgForm
                     )
                     .then((res) => {
-                        console.log(res.data);
-                        console.log();
                         imgUrlArr.push(res.data.baseUrl);
                         imgUrlArr = [...new Set(imgUrlArr)];
                         // imgArr = .push(res.data.baseUrl);
-                        console.log(imgUrlArr);
                     })
                     .catch((err) => {
                         console.log(err);
@@ -117,6 +117,11 @@
             };
         };
     };
+    $: imgUrlArr,
+        (() => {
+            console.log(imgUrlArr);
+            dispatch("getImageArr", { imgUrlArr });
+        })();
 </script>
 
 <div>
@@ -143,6 +148,10 @@
         <span
             class="text-3xl cursor-pointer"
             on:click={() => {
+                if (imgUrlArr.length >= maxImgCount) {
+                    alert(`최대 ${maxImgCount}개 이미지만 업로드 가능합니다.`);
+                    return false;
+                }
                 fileinput.click();
             }}
             ><i class="fa-solid fa-images" />
@@ -150,17 +159,23 @@
         <span
             class="ml-1 cursor-pointer"
             on:click={() => {
+                if (imgUrlArr.length >= maxImgCount) {
+                    alert(`최대 ${maxImgCount}개 이미지만 업로드 가능합니다.`);
+                    return false;
+                }
                 fileinput.click();
             }}>이미지 업로드</span
         >
 
-        <button
-            class="ml-3 border border-emerald-700 bg-emerald-700 px-3 rounded-md text-white"
-            on:click={() => {
-                const imgUrlArrString = imgUrlArr.join(",");
-                dispatch("imgUpdate", { imgUrlArrString });
-            }}>업데이트</button
-        >
+        {#if outUpload != "on"}
+            <button
+                class="ml-3 border border-emerald-700 bg-emerald-700 px-3 rounded-md text-white"
+                on:click={() => {
+                    const imgUrlArrString = imgUrlArr.join(",");
+                    dispatch("imgUpdate", { imgUrlArrString });
+                }}>업데이트</button
+            >
+        {/if}
     </div>
 
     <input

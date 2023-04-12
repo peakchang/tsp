@@ -2,7 +2,8 @@
     import { pc_sidebar } from "$front_lib/store";
     import FixedButton from "$components/FixedButton.svelte";
     import axios from "axios";
-    $:{
+    import * as XLSX from "xlsx/xlsx.mjs";
+    $: {
         console.log($pc_sidebar);
     }
     let yogAllList = getYogAllList();
@@ -14,16 +15,19 @@
     ];
 
     let typeArr = [
-        { typeName: "전체" },
-        { typeName: "일반", typeValue: "basic" },
+        { typeName: "전체"},
+        { typeName: "5G", typeValue: "5g" },
+        { typeName: "LTE", typeValue: "lte" },
         { typeName: "키즈", typeValue: "kids" },
     ];
     let yogChecked = [];
     let py_num = [];
+    let py_active = [];
     let py_tong = [];
     let py_name = [];
     let py_call = [];
     let py_sms = [];
+    let py_data = [];
     let py_addinfo = [];
     let py_fee = [];
     let py_seq = [];
@@ -33,6 +37,8 @@
     let radioTong;
     let radioType;
 
+    let exFileVal;
+    let excelVal;
     const serverUrl = import.meta.env.VITE_SERVER_URL;
 
     const choice_btn = ["선택수정", "선택삭제", "상품추가"];
@@ -60,9 +66,7 @@
                 console.log("삭제 성공!");
                 yogAllList = getYogAllList();
             })
-            .catch((err) => {
-                
-            });
+            .catch((err) => {});
     };
 
     const choiceUpdate = () => {
@@ -73,6 +77,7 @@
                 py_tong,
                 py_name,
                 py_call,
+                py_data,
                 py_sms,
                 py_addinfo,
                 py_fee,
@@ -80,8 +85,8 @@
                 py_type,
             })
             .then((res) => {
-                if (res.data.result == 'fail') {
-                    alert('업데이트에 실패 했습니다.')
+                if (res.data.result == "fail") {
+                    alert("업데이트에 실패 했습니다.");
                 }
                 yogAllList = getYogAllList();
             })
@@ -112,21 +117,26 @@
                 import.meta.env.VITE_SERVER_URL + "/yog/get_yog_list" + addQuery
             );
             const json = await res.data.get_yog_list;
+            console.log(json);
 
             py_num = [];
             py_tong = [];
             py_name = [];
             py_call = [];
+            py_data = [];
             py_sms = [];
             py_addinfo = [];
             py_fee = [];
             py_seq = [];
             py_type = [];
+            py_active= []
             for (let i = 0; i < json.length; i++) {
                 py_num.push(json[i].py_num);
                 py_tong.push(json[i].py_tong);
+                py_active.push(json[i].py_active);
                 py_name.push(json[i].py_name);
                 py_call.push(json[i].py_call);
+                py_data.push(json[i].py_data);
                 py_addinfo.push(json[i].py_addinfo);
                 py_sms.push(json[i].py_sms);
                 py_fee.push(json[i].py_fee);
@@ -135,7 +145,7 @@
             }
 
             inputChkTemp = [...new Array(json.length)].map((_, i) => i);
-            yogChecked = []
+            yogChecked = [];
             return json;
         } catch (error) {
             console.log(error.message);
@@ -144,6 +154,37 @@
 
     const allChk = (e) => {
         yogChecked = e.target.checked ? [...inputChkTemp] : [];
+    };
+
+    const readExcel = (e) => {
+        let input = e.target;
+        let reader = new FileReader();
+        reader.onload = function () {
+            let data = reader.result;
+            let workBook = XLSX.read(data, { type: "binary" });
+            workBook.SheetNames.forEach(function (sheetName) {
+                console.log("SheetName: " + sheetName);
+                let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+                console.log(rows);
+                excelVal = rows;
+            });
+        };
+        reader.readAsBinaryString(input.files[0]);
+    };
+    const uploadExcel = (e) => {
+        console.log(excelVal);
+        axios.post(serverUrl + "/yog/upload_excel", excelVal).then((res) => {});
+    };
+
+    const py_active_change = (e) => {
+        console.log(e.target.checked);
+        console.log(e.target.value);
+        if (e.target.checked) {
+            py_active[Number(e.target.value)] = 1;
+        } else {
+            py_active[Number(e.target.value)] = 0;
+        }
+        console.log(py_active);
     };
 </script>
 
@@ -210,6 +251,24 @@
                 {/each}
             </ul>
         </div>
+
+        <div class="flex">
+            <input
+                type="file"
+                bind:value={exFileVal}
+                on:change={readExcel}
+                class="block border w-48 border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 ml-4 mt-2
+                  file:bg-transparent file:border-0
+                  file:bg-gray-300 file:mr-4
+                  file:py-1 file:px-2"
+            />
+            <button
+                class="border border-blue-700 bg-blue-700 px-4 py-1 text-sm rounded-md text-white ml-3 mt-2"
+                on:click={uploadExcel}
+            >
+                업로드
+            </button>
+        </div>
     </div>
 
     <div class="table_wrap mt-3">
@@ -225,12 +284,18 @@
                             <input
                                 type="checkbox"
                                 on:change={allChk}
-                                checked={yogChecked.length == inputChkTemp.length}
+                                checked={yogChecked.length ==
+                                    inputChkTemp.length}
                             />
                         </th>
+                        <th class="border border-slate-400 py-1"> 사용 </th>
                         <th class="border border-slate-400 py-1"> 통신사 </th>
+
                         <th class="border border-slate-400 py-1"> 타입 </th>
                         <th class="border border-slate-400 py-1"> 요금제명 </th>
+                        <th class="border border-slate-400 py-1"> 통화 </th>
+                        <th class="border border-slate-400 py-1"> 문자 </th>
+                        <th class="border border-slate-400 py-1"> 데이터 </th>
                         <th class="border border-slate-400 py-1"> 요금 </th>
                         <th class="border border-slate-400 py-1"> 조건 </th>
                         <th class="border border-slate-400 py-1"> 순서 </th>
@@ -238,13 +303,21 @@
 
                     {#each valList as val, idx}
                         <tr>
-                            <td class="border border-slate-400 py-1">
+                            <td class="border border-slate-400 w-7 py-1">
                                 <input
                                     type="checkbox"
                                     value={idx}
                                     bind:group={yogChecked}
                                 />
-                                {val.py_tong}
+                            </td>
+
+                            <td class="border border-slate-400 w-7 py-1">
+                                <input
+                                    type="checkbox"
+                                    value={idx}
+                                    checked={py_active[idx] === 1}
+                                    on:change={py_active_change}
+                                />
                             </td>
                             <td class="border border-slate-400 py-1">
                                 <select
@@ -261,7 +334,8 @@
                                     class="border border-slate-400 rounded-md py-1"
                                     bind:value={py_type[idx]}
                                 >
-                                    <option value="basic">일반</option>
+                                    <option value="5g">5G</option>
+                                    <option value="lte">LTE</option>
                                     <option value="kids">키즈</option>
                                 </select>
                             </td>
@@ -269,6 +343,27 @@
                                 <input
                                     type="text"
                                     bind:value={py_name[idx]}
+                                    class="border border-slate-300 h-auto py-1 w-11/12 rounded-md pl-2"
+                                />
+                            </td>
+                            <td class="border border-slate-400 py-1">
+                                <input
+                                    type="text"
+                                    bind:value={py_call[idx]}
+                                    class="border border-slate-300 h-auto py-1 w-11/12 rounded-md pl-2"
+                                />
+                            </td>
+                            <td class="border border-slate-400 py-1">
+                                <input
+                                    type="text"
+                                    bind:value={py_sms[idx]}
+                                    class="border border-slate-300 h-auto py-1 w-11/12 rounded-md pl-2"
+                                />
+                            </td>
+                            <td class="border border-slate-400 py-1">
+                                <input
+                                    type="text"
+                                    bind:value={py_data[idx]}
                                     class="border border-slate-300 h-auto py-1 w-11/12 rounded-md pl-2"
                                 />
                             </td>
