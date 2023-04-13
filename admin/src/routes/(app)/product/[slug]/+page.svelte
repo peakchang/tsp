@@ -138,6 +138,38 @@
         console.log(it_mainstan_yog);
         console.log(it_seq);
         console.log(allPhInfo);
+        let it_mainstan = {
+            tong : it_mainstan_tong,
+            hyuh : it_mainstan_hyuh,
+            capa : it_mainstan_capa,
+            yog : it_mainstan_yog
+        }
+        console.log(it_mainstan);
+        console.log(JSON.stringify(it_mainstan));
+        axios.post(serverUrl + '/item/item_update_div', {
+            item_id: item_id,
+            it_name: it_name,
+            it_subname: it_subname,
+            it_cotype: it_cotype,
+            it_dependitem: it_dependitem,
+            it_mainitem: it_mainitem,
+            it_maker: it_maker,
+            it_brand: it_brand,
+            it_model: it_model,
+            it_explan: it_explan,
+            it_price: it_price,
+            it_use: it_use,
+            it_jisho_status: it_jisho_status,
+            it_sunhal_use: it_sunhal_use,
+            it_nohalin: it_nohalin,
+            it_jisho_cate: it_jisho_cate,
+            it_color: it_color,
+            it_colorcode: it_colorcode,
+            it_img_list: it_img_list,
+            it_mainstan,
+            it_seq: it_seq,
+            allPhInfo
+        })
     };
 </script>
 
