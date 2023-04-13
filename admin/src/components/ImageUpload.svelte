@@ -11,33 +11,40 @@
     let imgUrlArr = [];
     let listsEl;
     let sortableLists;
+    let getImgList = []
     export let modifyImageList;
     export let outUpload;
     export let maxImgCount;
-    console.log(outUpload);
-    console.log(maxImgCount);
 
+    /*
+    Sortable을 사용해 imgUrlArr을 직접 변겨하게 되면 에러가 난다. (배열이 꼬임) 이를 방지하기 위해
+    imgUrlArr 은 직접 사용하기 위해 따로 관리하고 상위 +page.svelte 에 보낼 배열은
+    getImgList 에 따로 저장해서 사용
+    */
     onMount(() => {
         if (modifyImageList) {
-            imgUrlArr = JSON.parse(modifyImageList);
+            imgUrlArr = modifyImageList;
         }
         // For Lists
         sortableLists = new Sortable(listsEl, {
             group: "My Lists", // 한 목록에서 다른 목록으로 요소를 끌어오려면(DnD) 두 목록의 그룹 값이 같아야 합니다.
             handle: ".list", // 드래그 핸들이 될 요소의 선택자를 입력합니다.
-            delay: 50, // 클릭이 밀리는 것을 방지하기 위해 약간의 지연 시간을 추가합니다.
+            delay: 0, // 클릭이 밀리는 것을 방지하기 위해 약간의 지연 시간을 추가합니다.
             animation: 0, // 정렬할 때 애니메이션 속도(ms)를 지정합니다.
             forceFallback: true, // 다양한 환경의 일관된 Drag&Drop(DnD)을 위해 HTML5 기본 DnD 동작을 무시하고 내장 기능을 사용합니다.
-            // 요소의 DnD가 종료되면 실행할 핸들러(함수)를 지정합니다.
-            onEnd(event) {
-                const clone = _cloneDeep(imgUrlArr[event.oldIndex]);
-                imgUrlArr.splice(event.oldIndex, 1);
-                imgUrlArr.splice(event.newIndex, 0, clone);
-                imgUrlArr = [...new Set(imgUrlArr)];
+            animation: 150,
+            onSort: function (e) {
+                var items = e.to.children;
+                let tempArr = [];
+                for (let i = 0; i < items.length; i++) {
+                    tempArr.push(items[i].querySelector("img").src);
+                }
+                getImgList = tempArr;
             },
         });
     });
 
+    // 이미지 삭제시 파일에서 삭제 및 배열에서도 삭제
     const deleteImg = (e) => {
         const idx = Number(e.target.dataset.idx);
         const getImgSplit = imgUrlArr[idx].split("/");
@@ -52,7 +59,10 @@
             .catch((err) => {});
         imgUrlArr.splice(idx, 1);
         imgUrlArr = [...new Set(imgUrlArr)];
+        getImgList = imgUrlArr
     };
+
+    // 이미지를 선택하면 사이즈 변경 (최대 1200px) 및 webp 변경 후 업로드
     const onFileSelected = (e) => {
         const maxWidth = 1200;
         const file = e.target.files[0];
@@ -109,7 +119,7 @@
                     .then((res) => {
                         imgUrlArr.push(res.data.baseUrl);
                         imgUrlArr = [...new Set(imgUrlArr)];
-                        // imgArr = .push(res.data.baseUrl);
+                        getImgList = imgUrlArr;
                     })
                     .catch((err) => {
                         console.log(err);
@@ -119,8 +129,7 @@
     };
     $: imgUrlArr,
         (() => {
-            console.log(imgUrlArr);
-            dispatch("getImageArr", { imgUrlArr });
+            dispatch("getImageArr", { getImgList });
         })();
 </script>
 
