@@ -144,8 +144,7 @@
             capa : it_mainstan_capa,
             yog : it_mainstan_yog
         }
-        console.log(it_mainstan);
-        console.log(JSON.stringify(it_mainstan));
+        it_mainstan = JSON.stringify(it_mainstan)
         axios.post(serverUrl + '/item/item_update_div', {
             item_id: item_id,
             it_name: it_name,
