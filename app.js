@@ -13,7 +13,11 @@ import bodyParser from 'body-parser';
 // 최초 테이블 생성
 import { tableSetting } from './lib/back_lib/set_table.js';
 tableSetting()
+
 // router 설정
+
+// import { adminRouter } from "./routes/admin.js"
+
 import { apiRouter } from "./routes/api.js"
 import { authRouter } from './routes/auth.js';
 import { boardRouter } from './routes/board.js';
@@ -28,6 +32,9 @@ import { yogRouter } from './routes/yog_set.js';
 
 // svelte build 파일 불러오기
 import { handler } from "./front/build/handler.js"
+// import { handler as adminHandler } from "./admin/build/handler.js"
+
+import { handler as adminHandler } from "./admin/build/handler.js"
 
 
 // const passportConfig = require('./passport');
@@ -120,10 +127,12 @@ app.use('/api/v4/qa', qaRouter);
 app.use('/api/v4/review', reviewRouter);
 app.use('/api/v4/yog', yogRouter);
 
+// app.use('/admin', adminHandler)
 
+app.use('/admin', adminHandler);
 
+app.use(handler)
 
-app.use(handler);
 
 // app.get('/', (req, res) => {
 //     console.log(`now PORT is ${process.env.PORT}`);

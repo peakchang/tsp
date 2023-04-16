@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import axios from "axios";
     import { createEventDispatcher } from "svelte";
+    import imageCompression from "browser-image-compression";
     const dispatch = createEventDispatcher();
 
     let editor;
@@ -53,11 +54,21 @@
             input.click();
 
             // input change
-            input.onchange = (e) => {
+            input.onchange = async (e) => {
                 const maxWidth = 1200;
-                const file = e.target.files[0];
+                const img_file = e.target.files[0];
+
+                const options = {
+                    maxSizeMB: 0.7,
+                    // maxWidthOrHeight: 1920,
+                    useWebWorker: true,
+                };
+                const compressedFile = await imageCompression(img_file, options);
+
+
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(compressedFile);
+
                 reader.onload = function (r) {
                     const img = new Image();
                     img.src = r.target.result;
@@ -161,6 +172,5 @@
 </div>
 
 <style>
-    
     @import "https://cdn.quilljs.com/1.3.6/quill.snow.css";
 </style>

@@ -88,7 +88,7 @@
                             </td>
                             <td class="border border-slate-400 py-1" />
                             <td class="border border-slate-400 py-1"
-                                >갤럭시Z플립4</td
+                                >{val.it_subname}</td
                             >
                             <td class="border border-slate-400 py-1">
                                 {val.it_ph_tongsin.toUpperCase()}

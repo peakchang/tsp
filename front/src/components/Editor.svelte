@@ -2,14 +2,16 @@
     import { onMount } from "svelte";
     import axios from "axios";
     import { createEventDispatcher } from "svelte";
+    import imageCompression from "browser-image-compression";
     const dispatch = createEventDispatcher();
 
     let editor;
     let imgArr = [];
     let getFolder = "";
+    let editorContent;
+    let quill;
 
     export let modifyVal;
-    console.log(modifyVal);
 
     onMount(async () => {
         const { default: Quill } = await import("quill");
@@ -17,7 +19,7 @@
         img_fomat.className = "inline-block";
         Quill.register(img_fomat, true);
 
-        let quill = new Quill(editor, {
+        quill = new Quill(editor, {
             modules: {
                 toolbar: {
                     container: [
@@ -52,11 +54,23 @@
             input.click();
 
             // input change
-            input.onchange = (e) => {
+            input.onchange = async (e) => {
                 const maxWidth = 1200;
-                const file = e.target.files[0];
+                const img_file = e.target.files[0];
+
+                const options = {
+                    maxSizeMB: 0.7,
+                    // maxWidthOrHeight: 1920,
+                    useWebWorker: true,
+                };
+                const compressedFile = await imageCompression(
+                    img_file,
+                    options
+                );
+
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(compressedFile);
+
                 reader.onload = function (r) {
                     const img = new Image();
                     img.src = r.target.result;
@@ -118,11 +132,17 @@
         }
 
         // 글 수정시
-        const editorContent = editor.querySelector(".ql-editor");
-        console.log(editorContent);
+        const editorContentWrap = editor.querySelector(".ql-editor");
 
-        const template = modifyVal
-        editorContent.innerHTML = template;
+        const template = modifyVal;
+        if (template) {
+            editorContentWrap.innerHTML = template;
+        }
+
+        quill.on("text-change", function (delta, source) {
+            editorContent = updateHtmlOutput();
+            dispatch("getEditorContent", { editorContent });
+        });
     });
 
     const dataURItoBlob = (dataURI) => {
@@ -136,31 +156,20 @@
         for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
         return new Blob([ia], { type: mime });
     };
+
+    function getQuillHtml() {
+        return quill.root.innerHTML;
+    }
+
+    function updateHtmlOutput() {
+        let html = getQuillHtml();
+        return html;
+    }
 </script>
 
 <div class="main_container">
     <div class="editor-wrapper">
         <div bind:this={editor} />
-    </div>
-
-    <div>
-        <button
-            on:click={() => {
-                const editorContent = editor.querySelector(".ql-editor");
-                const allContent = editorContent.innerHTML;
-                if (allContent == `<p><br></p>`) {
-                    alert("내용을 입력하세요");
-                    return;
-                }
-                let delArr = [];
-                for (let i = 0; i < imgArr.length; i++) {
-                    if (!allContent.includes(imgArr[i])) {
-                        delArr.push(imgArr[i]);
-                    }
-                }
-                dispatch("editorUpdate", { allContent, delArr });
-            }}>완료완료</button
-        >
     </div>
 </div>
 

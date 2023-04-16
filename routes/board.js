@@ -124,6 +124,8 @@ boardRouter.post('/delete_img', async (req, res, next) => {
         console.log(err);
     });
 
+    res.json({ statue: 'success' })
+
 })
 
 boardRouter.post('/list_img_uploads', upload_on.single('onimg'), (req, res, next) => {

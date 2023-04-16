@@ -9,10 +9,11 @@ const config = {
 		adapter: adapter({}),
 		alias: {
 			// this will match a file
+			$node_modules: path.resolve("./node_modules"),
 			$lib: path.resolve("./src/lib"),
 			$src: path.resolve("./src"),
 			$components: path.resolve("./src/components"),
-			$node_modules: path.resolve("./node_modules"),
+			$front_lib: path.resolve("../lib/front_lib"),
 		},
 	},
 
