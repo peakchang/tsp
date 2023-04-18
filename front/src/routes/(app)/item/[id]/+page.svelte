@@ -266,19 +266,19 @@
             </div>
             <div class="flex justify-between px-5 py-1 font-medium">
                 <span>단말기</span>
-                <span>1,254,000 WON</span>
+                <span>1,254,000원</span>
             </div>
 
             <div class="flex justify-between px-5 py-1 font-medium">
                 <span>더싼할인</span>
-                <span>-0 WON</span>
+                <span>-0원</span>
             </div>
 
             <div
                 class="flex justify-between px-5 py-1 font-semibold text-orange-600"
             >
                 <span>할부원금</span>
-                <span>1,254,000 WON</span>
+                <span>1,254,000원</span>
             </div>
 
             <div
