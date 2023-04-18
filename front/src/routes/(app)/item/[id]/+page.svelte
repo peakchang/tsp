@@ -2,13 +2,18 @@
     import { page } from "$app/stores";
     import CalculRadio from "$components/CalculRadio.svelte";
     import ColorRadio from "$components/ColorRadio.svelte";
+    import ItemInfo from "./ItemInfo.svelte";
+    import YogModal from "./YogModal.svelte";
     console.log($page.params.id);
+
+    let showModal = true;
 
     let capaVal;
     let tongVal;
     let hyuhVal;
     let halTermVal;
     let colorVal;
+
 
     let colorList = [
         { value: 0, color: "#0054FF" },
@@ -47,6 +52,7 @@
     $: console.log(colorVal);
 </script>
 
+<YogModal bind:showModal />
 <div class="max_screen suit-font mx-auto px-4">
     <div class="text-center">갤럭시Z플립3</div>
 
@@ -142,11 +148,43 @@
             <div
                 class="flex justify-center items-center col-span-1 mt-3 text-sm md:text-base"
             >
+                기존 통신사
+            </div>
+            <div class="flex px-2 col-span-4 mt-3">
+                {#each tongList as tong, idx}
+                    <CalculRadio pyVal="1">
+                        <input
+                            type="radio"
+                            value={tong.value}
+                            class="hidden peer"
+                            bind:group={tongVal}
+                            slot="input-set"
+                        />
+                        <span slot="inner-text">
+                            <img
+                                src="/img/{tong.text}_radio.png"
+                                alt=""
+                                class="w-7 mx-auto"
+                            />
+                        </span>
+                    </CalculRadio>
+                {/each}
+            </div>
+
+            <!-- ************** -->
+
+            <div
+                class="flex justify-center items-center col-span-1 mt-3 text-sm md:text-base"
+            >
                 요금제
             </div>
             <div class="flex px-2 col-span-4 mt-3">
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div
                     class="border border-gray-400 w-full mr-2 rounded-md py-2 px-3 cursor-pointer flex justify-between items-center"
+                    on:click={() => {
+                        showModal =!showModal;
+                    }}
                 >
                     <span>5GX 프라임</span>
                     <span
@@ -197,29 +235,92 @@
                     </CalculRadio>
                 {/each}
             </div>
+
+            <!-- ************** -->
+            <div
+                class="flex justify-center items-center col-span-1 mt-3 text-sm md:text-base"
+            >
+                유심
+            </div>
+            <div class="flex px-2 col-span-4 mt-3">
+                {#each hyuhList as hyuh, idx}
+                    <CalculRadio>
+                        <input
+                            type="radio"
+                            value={hyuh.value}
+                            class="hidden peer"
+                            bind:group={hyuhVal}
+                            slot="input-set"
+                        />
+                        <span slot="inner-text">{hyuh.text}</span>
+                    </CalculRadio>
+                {/each}
+            </div>
         </div>
 
-        <div class="border border-red-600 mx-8">
-            계산 영역
+        <div class="mt-10 md:mt-0 md:mx-8">
             <div
-                class=" py-2 bg-gray-100 text-center font-medium text-xl rounded-lg"
+                class=" py-2 bg-gray-100 text-center font-semibold text-xl rounded-lg"
             >
                 단말기 가격 안내
             </div>
-            <div class="flex justify-between px-5 py-1" style="font-size:17px;">
+            <div class="flex justify-between px-5 py-1 font-medium">
                 <span>단말기</span>
                 <span>1,254,000 WON</span>
             </div>
 
-            <div class="flex justify-between px-5 py-1" style="font-size:17px;">
-                <span>단말가격</span>
+            <div class="flex justify-between px-5 py-1 font-medium">
+                <span>더싼할인</span>
                 <span>-0 WON</span>
             </div>
 
-            <div class="flex justify-between px-5 py-1 font-semibold text-orange-600" style="font-size:17px;">
-                <span>단말가격</span>
+            <div
+                class="flex justify-between px-5 py-1 font-semibold text-orange-600"
+            >
+                <span>할부원금</span>
                 <span>1,254,000 WON</span>
+            </div>
+
+            <div
+                class=" py-2 bg-gray-100 text-center font-semibold text-xl rounded-lg"
+            >
+                요금제 안내
+            </div>
+            <div class="flex justify-between font-medium px-5 py-1" sty>
+                <span>5GX 프라임</span>
+                <span>89,000원</span>
+            </div>
+
+            <div class="flex justify-between font-medium px-5 py-1">
+                <span>선택약정할인</span>
+                <span>-22,500원</span>
+            </div>
+
+            <div
+                class="flex justify-between px-5 py-1 font-semibold text-orange-600"
+            >
+                <span>월 기본료</span>
+                <span>66,750원</span>
+            </div>
+
+            <div
+                class="result_calcul mt-3 border border-gray-400 rounded-md overflow-hidden text-center"
+            >
+                <div class="bg-slate-500 text-white p-2">
+                    <span class="text-xl font-semibold">월 청구요금</span>
+                    <span class="text-xs">(월 할부금 + 월 기본료)</span>
+                </div>
+                <div class="text-2xl mt-3 font-bold">월 118,542원</div>
+                <div class="mb-3">(51,792 + 66,750원)</div>
+            </div>
+            <div class="text-center">
+                <label class="cursor-pointer text-sm">
+                    <input type="checkbox" class=""/>
+                    할부이자 미포함 금액
+                </label>
             </div>
         </div>
     </div>
 </div>
+
+<ItemInfo />

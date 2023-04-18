@@ -83,6 +83,7 @@
 <style>
     .modal-background {
         background: rgba(0, 0, 0, 0.3);
+        animation: fade 0.3s ease
     }
     .modal-inner {
         animation: zoom 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
