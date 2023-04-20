@@ -53,7 +53,7 @@ itemRouter.use('/item_update_div', async (req, res, next) => {
     // console.log(phi.sk.it_ph_fprice);
     if (chk_item) {
         const itemUpdateSql = `UPDATE ph_item SET it_name =?, it_subname =?, it_cotype =?,it_dependitem =?,it_mainitem =?,it_maker =?,it_brand =?,it_model =?,it_explan =?,it_price =?,it_use =?,it_jisho_status =?,it_sunhal_use =?,it_nohalin =?,it_jisho_cate =?,it_color =?,it_colorcode =?,it_img_list=?,it_mainstan =?,it_gongsi_model =?,it_relation_item =?,it_ph_tongsin =?,it_ph_sk_fprice =?,it_ph_sk_capa =?,it_ph_sk_newdisc =?,it_ph_sk_mnpgdisc =?,it_ph_sk_mnpsdisc =?,it_ph_sk_gibgdisc =?,it_ph_sk_gibsdisc =?,it_ph_kt_fprice =?,it_ph_kt_capa =?,it_ph_kt_newdisc =?,it_ph_kt_mnpgdisc =?,it_ph_kt_mnpsdisc =?,it_ph_kt_gibgdisc =?,it_ph_kt_gibsdisc =?,it_ph_lg_fprice =?,it_ph_lg_capa =?,it_ph_lg_newdisc =?,it_ph_lg_mnpgdisc =?,it_ph_lg_mnpsdisc =?,it_ph_lg_gibgdisc =?,it_ph_lg_gibsdisc =?, it_seq = ?,it_update_time =? WHERE it_id =?`;
-        const itemUpdateArr = [ph.it_name, ph.it_subname, ph.it_cotype, ph.it_dependitem, ph.it_mainitem, ph.it_maker, ph.it_brand, ph.it_model, ph.it_explan, ph.it_price, ph.it_use, ph.it_jisho_status, ph.it_sunhal_use, ph.it_nohalin, ph.it_jisho_cate, ph.it_color, ph.it_colorcode,ph.it_img_list, ph.it_mainstan, ph.it_gongsi_model, ph.it_relation_item, ph.it_ph_tongsin, phi.sk.it_ph_fprice, phi.sk.it_ph_capa, phi.sk.it_ph_newdisc, phi.sk.it_ph_mnpgdisc, phi.sk.it_ph_mnpsdisc, phi.sk.it_ph_gibgdisc, phi.sk.it_ph_gibsdisc, phi.kt.it_ph_fprice, phi.kt.it_ph_capa, phi.kt.it_ph_newdisc, phi.kt.it_ph_mnpgdisc, phi.kt.it_ph_mnpsdisc, phi.kt.it_ph_gibgdisc, phi.kt.it_ph_gibsdisc, phi.lg.it_ph_fprice, phi.lg.it_ph_capa, phi.lg.it_ph_newdisc, phi.lg.it_ph_mnpgdisc, phi.lg.it_ph_mnpsdisc, phi.lg.it_ph_gibgdisc, phi.lg.it_ph_gibsdisc, ph.it_seq, now, ph.item_id]
+        const itemUpdateArr = [ph.it_name, ph.it_subname, ph.it_cotype, ph.it_dependitem, ph.it_mainitem, ph.it_maker, ph.it_brand, ph.it_model, ph.it_explan, ph.it_price, ph.it_use, ph.it_jisho_status, ph.it_sunhal_use, ph.it_nohalin, ph.it_jisho_cate, ph.it_color, ph.it_colorcode, ph.it_img_list, ph.it_mainstan, ph.it_gongsi_model, ph.it_relation_item, ph.it_ph_tongsin, phi.sk.it_ph_fprice, phi.sk.it_ph_capa, phi.sk.it_ph_newdisc, phi.sk.it_ph_mnpgdisc, phi.sk.it_ph_mnpsdisc, phi.sk.it_ph_gibgdisc, phi.sk.it_ph_gibsdisc, phi.kt.it_ph_fprice, phi.kt.it_ph_capa, phi.kt.it_ph_newdisc, phi.kt.it_ph_mnpgdisc, phi.kt.it_ph_mnpsdisc, phi.kt.it_ph_gibgdisc, phi.kt.it_ph_gibsdisc, phi.lg.it_ph_fprice, phi.lg.it_ph_capa, phi.lg.it_ph_newdisc, phi.lg.it_ph_mnpgdisc, phi.lg.it_ph_mnpsdisc, phi.lg.it_ph_gibgdisc, phi.lg.it_ph_gibsdisc, ph.it_seq, now, ph.item_id]
 
         await sql_con.promise().query(itemUpdateSql, itemUpdateArr);
     } else {
@@ -106,12 +106,51 @@ itemRouter.use('/item_update_div', async (req, res, next) => {
             it_time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
         const itemInsertArr = [
             ph.item_id, ph.it_name, ph.it_subname, ph.it_cotype, ph.it_dependitem, ph.it_mainitem, ph.it_maker, ph.it_brand, ph.it_model, ph.it_explan,
-            ph.it_price, ph.it_use, ph.it_jisho_status, ph.it_sunhal_use, ph.it_nohalin, ph.it_jisho_cate, ph.it_color, ph.it_colorcode,  ph.it_mainstan, ph.it_gongsi_model, ph.it_img_list,
+            ph.it_price, ph.it_use, ph.it_jisho_status, ph.it_sunhal_use, ph.it_nohalin, ph.it_jisho_cate, ph.it_color, ph.it_colorcode, ph.it_mainstan, ph.it_gongsi_model, ph.it_img_list,
             ph.it_relation_item, ph.it_ph_tongsin, phi.sk.it_ph_fprice, phi.sk.it_ph_capa, phi.sk.it_ph_newdisc, phi.sk.it_ph_mnpgdisc, phi.sk.it_ph_mnpsdisc, phi.sk.it_ph_gibgdisc, phi.sk.it_ph_gibsdisc, phi.kt.it_ph_fprice,
             phi.kt.it_ph_capa, phi.kt.it_ph_newdisc, phi.kt.it_ph_mnpgdisc, phi.kt.it_ph_mnpsdisc, phi.kt.it_ph_gibgdisc, phi.kt.it_ph_gibsdisc, phi.lg.it_ph_fprice, phi.lg.it_ph_capa, phi.lg.it_ph_newdisc, phi.lg.it_ph_mnpgdisc,
             phi.lg.it_ph_mnpsdisc, phi.lg.it_ph_gibgdisc, phi.lg.it_ph_gibsdisc, ph.it_seq, now]
 
         await sql_con.promise().query(itemInsertSql, itemInsertArr);
+    }
+})
+
+
+itemRouter.use('/item_update_excel', async (req, res, next) => {
+    console.log(req.body);
+    for await (const exVal of req.body) {
+        console.log(exVal);
+
+        if (exVal.it_id) {
+            console.log('업데이트~~~');
+        } else {
+            console.log('인서트~~~');
+            const timestamp = String(new Date().getTime());
+            console.log(timestamp);
+            let keyName;
+            let valList = [];
+            for (const key in exVal) {
+
+                if(keyName){
+                    keyName = keyName + key + ',';
+                }else{
+                    keyName = key + ',';
+                }
+
+                valList.push(exVal[key]);
+                
+                
+                
+                // console.log(exVal[key]);
+            }
+            console.log(keyName);
+            console.log(valList);
+
+            // const exInsertSql = 'INSERT INTO'
+        }
+
+
+
     }
 })
 

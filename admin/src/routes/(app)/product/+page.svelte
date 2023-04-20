@@ -4,12 +4,15 @@
     import FixedButton from "$components/FixedButton.svelte";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
+    import * as XLSX from "xlsx/xlsx.mjs";
     import axios from "axios";
 
     let itemList = getItemList();
     let itSeqList = [];
     let itPriceList = [];
     let itUseList = [];
+    let exFileVal;
+    let excelVal = []
     const add_item = () => {
         const timestamp = String(new Date().getTime());
         console.log($page.url.pathname);
@@ -39,11 +42,66 @@
             console.log(error.message);
         }
     }
+
+    const readExcel = (e) => {
+        let input = e.target;
+        let reader = new FileReader();
+        reader.onload = function () {
+            let data = reader.result;
+            let workBook = XLSX.read(data, { type: "binary" });
+            workBook.SheetNames.forEach(function (sheetName) {
+                console.log("SheetName: " + sheetName);
+                let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+                console.log(rows);
+                excelVal = rows;
+            });
+        };
+        reader.readAsBinaryString(input.files[0]);
+    };
+
+    const uploadExcel = async () => {
+        console.log(excelVal);
+        await axios.post(import.meta.env.VITE_SERVER_URL + "/item/item_update_excel",excelVal)
+    }
 </script>
 
 <FixedButton on:add_item={add_item} {choice_btn} />
 
 <div class="suit-font px-2 pt-24" class:pl-44={!$pc_sidebar}>
+    <div>
+        <div class="flex flex-wrap">
+            <select
+                class="border border-slate-400 rounded-md mt-2 px-2 text-xs md:text-sm"
+            >
+                <option value="">진행중 모델</option>
+                <option value="">전체 모델</option>
+                <option value="">예외 모델</option>
+            </select>
+
+            <button
+                class="border border-blue-700 bg-blue-700 px-4 py-1 text-sm rounded-md text-white ml-3 mt-2"
+            >
+                조회
+            </button>
+
+            <input
+                type="file"
+                bind:value={exFileVal}
+                on:change={readExcel}
+                class="block border w-48 border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 ml-4 mt-2
+                  file:bg-transparent file:border-0
+                  file:bg-gray-300 file:mr-4
+                  file:py-1 file:px-2"
+            />
+            <button
+                class="border border-blue-700 bg-blue-700 px-4 py-1 text-sm rounded-md text-white ml-3 mt-2"
+                on:click={uploadExcel}
+            >
+                업로드
+            </button>
+        </div>
+    </div>
+
     <div class="table_wrap mt-3">
         <div class="table_area">
             {#await itemList}
