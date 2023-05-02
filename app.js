@@ -30,6 +30,8 @@ import { qaRouter } from "./routes/qa_set.js"
 import { reviewRouter } from './routes/review_set.js';
 import { yogRouter } from './routes/yog_set.js';
 
+import { getItemRouter } from './routes/get_item.js'
+
 // svelte build 파일 불러오기
 import { handler } from "./front/build/handler.js"
 // import { handler as adminHandler } from "./admin/build/handler.js"
@@ -126,6 +128,8 @@ app.use('/api/v4/order', orderRouter);
 app.use('/api/v4/qa', qaRouter);
 app.use('/api/v4/review', reviewRouter);
 app.use('/api/v4/yog', yogRouter);
+
+app.use('/api/v4/get_item', getItemRouter);
 
 // app.use('/admin', adminHandler)
 

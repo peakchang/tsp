@@ -7,18 +7,17 @@
     import * as XLSX from "xlsx/xlsx.mjs";
     import axios from "axios";
 
+    let chkList = [];
     let itemList = getItemList();
     let itSeqList = [];
     let itPriceList = [];
     let itUseList = [];
+    let itImageList = [];
+    let itIdList = [];
     let exFileVal;
-    let excelVal = []
-    const add_item = () => {
-        const timestamp = String(new Date().getTime());
-        console.log($page.url.pathname);
-        goto($page.url.pathname + "/" + timestamp);
-    };
-    const choice_btn = ["선택수정", "선택삭제", "상품추가", "상품복사"];
+    let excelVal = [];
+
+    const choice_btn = ["선택수정", "선택삭제", "상품추가"];
     $: {
         console.log($pc_sidebar);
     }
@@ -29,14 +28,20 @@
                 import.meta.env.VITE_SERVER_URL + "/item/get_item_list"
             );
             const json = await res.data.item_list;
+            console.log(json);
             for (let i = 0; i < json.length; i++) {
-                console.log(json[i]);
                 itSeqList.push(json[i].it_seq);
                 itPriceList.push(json[i].it_price);
                 itUseList.push(json[i].it_use);
+                itIdList.push(json[i].it_id);
+                // itImageList.push(json[i].it_img_list.split(',')[0])
             }
-            console.log(itSeqList);
-            console.log(itUseList);
+
+            
+            
+
+
+
             return json;
         } catch (error) {
             console.log(error.message);
@@ -61,11 +66,45 @@
 
     const uploadExcel = async () => {
         console.log(excelVal);
-        await axios.post(import.meta.env.VITE_SERVER_URL + "/item/item_update_excel",excelVal)
-    }
+        await axios
+            .post(
+                import.meta.env.VITE_SERVER_URL + "/item/item_update_excel",
+                excelVal
+            )
+            .then((res) => {
+                console.log("아이템 업데이트 성공!!");
+                // location.reload();
+            });
+    };
+
+    const add_item = () => {
+        const timestamp = String(new Date().getTime());
+        console.log($page.url.pathname);
+        goto($page.url.pathname + "/" + timestamp);
+    };
+
+    const del_item = async () => {
+        console.log("del");
+        console.log(chkList);
+        console.log(itIdList);
+        await axios
+            .post(
+                import.meta.env.VITE_SERVER_URL + "/item/item_update_list",
+                {chkList, itIdList, type: 'item_delete'}
+            )
+            .then((res) => {
+                console.log("아이템 업데이트 성공!!");
+                // location.reload();
+            });
+    };
+
+    const changeMainStan = (e) => {
+        console.log(e.target.value);
+        console.log(itIdList[e.target.value]);
+    };
 </script>
 
-<FixedButton on:add_item={add_item} {choice_btn} />
+<FixedButton on:add_item={add_item} on:choice_del={del_item} {choice_btn} />
 
 <div class="suit-font px-2 pt-24" class:pl-44={!$pc_sidebar}>
     <div>
@@ -129,7 +168,11 @@
                     {#each valList as val, idx}
                         <tr>
                             <td class="border border-slate-400 py-1">
-                                <input type="checkbox" />
+                                <input
+                                    type="checkbox"
+                                    value={idx}
+                                    bind:group={chkList}
+                                />
                             </td>
 
                             <td class="border border-slate-400 py-1">
@@ -144,12 +187,24 @@
                                     {val.it_id}
                                 </a>
                             </td>
-                            <td class="border border-slate-400 py-1" />
+                            <td class="border border-slate-400 py-1" >
+                                <img src="{val.it_img_list ? val.it_img_list.split(',')[0] : ''}" alt="" class="w-16 mx-auto">
+                            </td>
                             <td class="border border-slate-400 py-1"
                                 >{val.it_subname}</td
                             >
                             <td class="border border-slate-400 py-1">
-                                {val.it_ph_tongsin.toUpperCase()}
+                                {#if val.it_mainstan}
+                                    {val.it_mainstan
+                                        .replace(/"/, "")
+                                        .split(",")[0]
+                                        .toUpperCase()}
+                                    <button
+                                        value={idx}
+                                        on:click={changeMainStan}
+                                        >(심플 변경)</button
+                                    >
+                                {/if}
                             </td>
                             <td class="border border-slate-400 py-1">
                                 <input
