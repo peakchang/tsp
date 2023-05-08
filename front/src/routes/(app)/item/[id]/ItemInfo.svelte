@@ -1,6 +1,9 @@
 <script>
     import ReviewComponent from "./ReviewComponent.svelte";
     import QnaComponent from "./QnaComponent.svelte";
+    import AllItemDetail from "./AllItemDetail.svelte";
+
+    export let detailPropVal;
     let menuValStatus = 0;
 
     let qnaObjVal = {};
@@ -55,7 +58,7 @@
     </ul>
 
     {#if menuValStatus == 0}
-        <div>slfkdjsldjf</div>
+        <AllItemDetail detailPropVal={detailPropVal} />
     {:else if menuValStatus == 1}
         <ReviewComponent />
     {:else}

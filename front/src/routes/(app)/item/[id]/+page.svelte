@@ -5,12 +5,14 @@
     import ItemInfo from "./ItemInfo.svelte";
     import YogModal from "./YogModal.svelte";
     import axios from "axios";
-    console.log($page.params.id);
+
+    import { numComma } from "$front_lib/lib";
     let addQuery = $page.params.id;
 
     let showModal = true;
 
     let capaVal;
+    let capaTxt;
     let pretongVal;
     let nowtongVal;
     let hyuhVal;
@@ -26,11 +28,20 @@
     let get_item_info;
     let mainstan = {};
     let allInfo = { sk: {}, kt: {}, lg: {} };
+    let changeTongStatus;
+    let changeTongBaseYog;
 
     // 할인 및 계산
     let nowGongsi;
     let nowHalin;
     let halwon;
+    let monthHalwon;
+    let yogName;
+    let yogFee;
+    let sunyakhal;
+    let resultFee;
+
+    let detailPropVal;
 
     // radio 메뉴 변수 모음
     let colorList = [];
@@ -60,7 +71,7 @@
     async function getItemInfo() {
         try {
             const res = await axios.get(
-                import.meta.env.VITE_SERVER_URL + `/get_item?it_id=${addQuery}`
+                import.meta.env.VITE_SERVER_URL + `/get_item/${addQuery}`
             );
 
             // 공시지원금 넣기
@@ -92,17 +103,24 @@
                     }
                 }
             }
+
+            console.log("*********************** 정상체크~~~");
             // 색상코드 메뉴 만들기
-            let colorTemp = get_item_info.it_color.split(",");
-            let colorCodeTemp = get_item_info.it_colorcode.split(",");
-            Object.keys(colorTemp).find((key) => {
-                const tempColorObj = {
-                    value: colorTemp[key],
-                    color: colorCodeTemp[key],
-                };
-                colorList.push(tempColorObj);
-            });
-            colorVal = colorList[0].value;
+
+            let colorTemp;
+            let colorCodeTemp;
+            if (get_item_info.it_color && get_item_info.it_colorcode) {
+                colorTemp = get_item_info.it_color.split(",");
+                colorCodeTemp = get_item_info.it_colorcode.split(",");
+                Object.keys(colorTemp).find((key) => {
+                    const tempColorObj = {
+                        value: colorTemp[key],
+                        color: colorCodeTemp[key],
+                    };
+                    colorList.push(tempColorObj);
+                });
+                colorVal = colorList[0].value;
+            }
 
             let mainstanTemp = get_item_info.it_mainstan
                 .replace(/[\\"/]/g, "")
@@ -112,6 +130,8 @@
             mainstan.hyuh = mainstanTemp[2];
             mainstan.capa = mainstanTemp[3];
             mainstan.yog = mainstanTemp[4];
+
+            changeTongBaseYog = mainstan.yog;
 
             // // 초기 할인유형 셋팅
             hyuhVal = hyuhList[mainstan.hyuh].value;
@@ -126,6 +146,7 @@
                 capaList.push(capaTempObj);
             }
 
+            console.log(allYog);
             // 초기 기본 요금제 셋팅
             capaVal = capaList[mainstan.capa].value;
             yogVal = mainstan.yog;
@@ -150,6 +171,12 @@
             fPrice = Number(
                 get_item_info["it_ph_fprice_" + nowtongVal].split(",")[capaVal]
             );
+            if (prev_tong_val != nowtongVal) {
+                changeTongStatus = true;
+            } else {
+                changeTongStatus = false;
+            }
+            prev_tong_val = nowtongVal;
 
             // 요금제 변경시 요금제 정보 변경
             allYog = allInfo[nowtongVal].all_yog;
@@ -163,43 +190,53 @@
             );
 
             // 공시 할인시 출고가 - 공시 - 할인
-            console.log(`출고가 : ${fPrice}`);
-            console.log(`공시 : ${nowGongsi}`);
-            console.log(`할인: ${nowHalin}`);
             if (hyuhVal == "gongsi") {
                 halwon = fPrice - nowGongsi - nowHalin;
             } else {
                 halwon = fPrice - nowHalin;
             }
-            console.log(`할원 : ${halwon}`);
 
-            // console.log(yogInfo);
-            // console.log(allInfo);
-            // console.log(nowHalin);
-            // console.log(nowGongsi);
-            // console.log(gaipType);
-            // console.log(halinType);
+            monthHalwon = Math.round(halwon / halTermVal);
 
-            // console.log('--------------------------------------');
-            // console.log(`pretongVal : ${pretongVal}`);
-            // console.log(`nowtongVal : ${nowtongVal}`);
-            // console.log(`capaVal : ${capaVal}`);
-            // console.log(`hyuhVal : ${hyuhVal}`);
-            // console.log(`halTermVal : ${halTermVal}`);
-            // console.log(`yogVal : ${yogVal}`);
-            // console.log(`fPrice : ${fPrice}`);
+            console.log(yogInfo);
+
+            try {
+                yogName = yogInfo.py_name;
+            } catch (error) {
+                yogName = '';
+            }
+            
+
+            // 기본료
+            sunyakhal = yogInfo.py_fee * 0.25;
+            yogFee =
+                hyuhVal == "gongsi"
+                    ? yogInfo.py_fee
+                    : yogInfo.py_fee - sunyakhal;
+            resultFee = monthHalwon + yogFee;
+
+            capaTxt = capaList[capaVal].text;
+            detailPropVal = {
+                subname: get_item_info.it_subname,
+                capa: capaTxt,
+                halwon,
+                monthHalwon,
+                expain_accept: get_item_info.it_explan_all,
+            };
         }
-    }
-
-    function numComma(num) {
-        return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     }
 </script>
 
 {#await get_item_promise}
     <div>...loading</div>
 {:then getItemVal}
-    <YogModal bind:showModal bind:allYog bind:yogVal />
+    <YogModal
+        bind:showModal
+        bind:allYog
+        bind:yogVal
+        bind:changeTongStatus
+        {changeTongBaseYog}
+    />
     <div class="max_screen suit-font mx-auto px-4">
         <div class="text-center">갤럭시Z플립3</div>
 
@@ -432,21 +469,33 @@
                     <span>{numComma(fPrice)}원</span>
                 </div>
 
+                {#if hyuhVal == "gongsi"}
+                    <div class="flex justify-between px-5 py-1 font-medium">
+                        <span>공시지원금</span>
+                        <span>-{numComma(nowGongsi)}원</span>
+                    </div>
+                {/if}
+
                 <div class="flex justify-between px-5 py-1 font-medium">
                     <span>더싼할인</span>
-                    <span
-                        >-{numComma(nowHalin)}원</span
-                    >
+                    <span>-{numComma(nowHalin)}원</span>
                 </div>
 
                 <div
                     class="flex justify-between px-5 py-1 font-semibold text-orange-600"
                 >
                     <span>할부원금</span>
-                    <span
-                        >{numComma(halwon)}원</span
-                    >
+                    <span>{numComma(halwon)}원</span>
                 </div>
+
+                {#if halTermVal != 1}
+                    <div
+                        class="flex justify-between px-5 py-1 font-semibold text-orange-600"
+                    >
+                        <span>월 할부금</span>
+                        <span>{numComma(monthHalwon)}원</span>
+                    </div>
+                {/if}
 
                 <div
                     class=" py-2 bg-gray-100 text-center font-semibold text-xl rounded-lg"
@@ -454,20 +503,22 @@
                     요금제 안내
                 </div>
                 <div class="flex justify-between font-medium px-5 py-1" sty>
-                    <span>5GX 프라임</span>
-                    <span>89,000원</span>
+                    <span>{yogName}</span>
+                    <span>{numComma(yogFee)}원</span>
                 </div>
 
-                <div class="flex justify-between font-medium px-5 py-1">
-                    <span>선택약정할인</span>
-                    <span>-22,500원</span>
-                </div>
+                {#if hyuhVal == "sunyak"}
+                    <div class="flex justify-between font-medium px-5 py-1">
+                        <span>선택약정할인</span>
+                        <span>-{numComma(sunyakhal)}원</span>
+                    </div>
+                {/if}
 
                 <div
                     class="flex justify-between px-5 py-1 font-semibold text-orange-600"
                 >
                     <span>월 기본료</span>
-                    <span>66,750원</span>
+                    <span>{numComma(yogFee)}원</span>
                 </div>
 
                 <div
@@ -477,8 +528,19 @@
                         <span class="text-xl font-semibold">월 청구요금</span>
                         <span class="text-xs">(월 할부금 + 월 기본료)</span>
                     </div>
-                    <div class="text-2xl mt-3 font-bold">월 118,542원</div>
-                    <div class="mb-3">(51,792 + 66,750원)</div>
+                    <div class="text-2xl mt-3 font-bold">
+                        월 {numComma(resultFee)}원
+                    </div>
+
+                    {#if halTermVal != 1}
+                        <div class="mb-3 text-sm">
+                            ({numComma(monthHalwon)} + {numComma(yogFee)}원)
+                        </div>
+                    {:else}
+                        <div class="mb-3 text-sm">
+                            (입금하실 금액 : {numComma(halwon)})
+                        </div>
+                    {/if}
                 </div>
                 <div class="text-center">
                     <label class="cursor-pointer text-sm">
@@ -489,6 +551,6 @@
             </div>
         </div>
     </div>
-{/await}
 
-<ItemInfo />
+    <ItemInfo {detailPropVal} />
+{/await}

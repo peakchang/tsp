@@ -12,6 +12,7 @@
     } from "$front_lib/store";
 
     const buildLink = import.meta.env.VITE_BUILD_LINK;
+    console.log(buildLink);
 
     $pc_sidebar = false;
 

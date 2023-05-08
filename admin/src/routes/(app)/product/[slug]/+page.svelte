@@ -21,10 +21,11 @@
     let it_model;
     let it_explan;
     let it_price;
-    let it_use = true;
-    let it_jisho_status = true;
-    let it_sunhal_use = true;
-    let it_nohalin = true;
+    let it_hignend_chk;
+    let it_use;
+    let it_jisho_status;
+    let it_sunhal_use;
+    let it_nohalin;
     let it_jisho_cate;
     let it_color;
     let it_colorcode;
@@ -35,6 +36,7 @@
     let it_mainstan_hyuh;
     let it_mainstan_capa;
     let it_mainstan_yog;
+    let getGongsiModels;
     let it_gongsi_model;
     let it_relation_item_arr = [];
     let it_ph_tongsin;
@@ -82,13 +84,10 @@
                 import.meta.env.VITE_SERVER_URL +
                     `/item/get_product_info?it_id=${item_id}`
             );
-
-            console.log('어디야??');
             const json = await res.data.get_product;
-            console.log('**********-*-*-********');
+            getGongsiModels = await res.data.get_all_gongsi;
             allDevice = await res.data.get_all_devices;
 
-            console.log(json);
             it_name = json.it_name;
             it_subname = json.it_subname;
             it_cotype = json.it_cotype;
@@ -106,12 +105,19 @@
             it_use = json.it_use;
 
             it_jisho_status = json.it_jisho_status;
+            it_hignend_chk = json.it_hignend_chk;
             it_sunhal_use = json.it_sunhal_use;
             it_nohalin = json.it_nohalin;
             it_jisho_cate = json.it_jisho_cate;
             it_color = json.it_color;
             it_colorcode = json.it_colorcode;
             it_seq = json.it_seq;
+            it_gongsi_model = json.it_gongsi_model;
+
+            console.log(json.it_relation_item);
+            if(json.it_relation_item){
+                it_relation_item_arr = JSON.parse(json.it_relation_item);
+            }
 
             // 에디터와 이미지 업로드 기능에 기본값 넣어주기
             modifyVal = json.it_explan;
@@ -160,6 +166,7 @@
     };
 
     // 연관상품 추가 함수
+
     const get_it_realative = (e) => {
         const obj = it_relation_item_arr;
         const searchVal = e.target.value;
@@ -180,9 +187,26 @@
             itid: e.target.value,
             itname: e.target.options[e.target.selectedIndex].text,
         };
-        it_relation_item_arr.push(relationTemp);
+        it_relation_item_arr = [...it_relation_item_arr, relationTemp];
+        // it_relation_item_arr.push(relationTemp);
         console.log(it_relation_item_arr);
     };
+
+    // const del_relation_item = (e) => {
+    //     console.log(e.target);
+    // }
+    function del_relation_item(e) {
+        const tempRelationArr = [...it_relation_item_arr];
+        for (let i = 0; i < tempRelationArr.length; i++) {
+            console.log(tempRelationArr[i]);
+            if (tempRelationArr[i].itname === this.value) {
+                tempRelationArr.splice(i, 1);
+                i--;
+            }
+        }
+        console.log(tempRelationArr);
+        it_relation_item_arr = tempRelationArr
+    }
 
     // 우측 상단 고정 기본 버튼 선택
     const choice_btn = ["업데이트"];
@@ -206,6 +230,7 @@
         it_sunhal_use = changeBoolToInt(it_sunhal_use);
         it_nohalin = changeBoolToInt(it_nohalin);
         it_mainitem = changeBoolToInt(it_mainitem);
+        it_hignend_chk = changeBoolToInt(it_hignend_chk);
     }
 
     const changeBoolToInt = (chk) => {
@@ -221,46 +246,55 @@
     $: it_ph_tongsin = it_mainstan_nowtong;
 
     // 상품 업로드 하기~~
-    const itemUpdate = () => {
+    const itemUpdate = async () => {
         console.log(it_img_list);
         if (it_img_list) {
             it_img_list = it_img_list.join();
         }
 
         let it_mainstan = `${it_mainstan_nowtong},${it_mainstan_pretong},${it_mainstan_hyuh},${it_mainstan_capa},${it_mainstan_yog}`;
-        console.log(it_mainstan);
 
-        console.log(it_relation_item_arr);
         let it_relation_item = it_relation_item_arr
             ? JSON.stringify(it_relation_item_arr)
             : "";
 
-        axios.post(serverUrl + "/item/item_update_div", {
-            it_id: item_id,
-            it_name: it_name,
-            it_subname: it_subname,
-            it_cotype: it_cotype,
-            it_dependitem: it_dependitem,
-            it_mainitem: it_mainitem,
-            it_maker: it_maker,
-            it_brand: it_brand,
-            it_model: it_model,
-            it_explan: it_explan,
-            it_price: it_price,
-            it_use: it_use,
-            it_jisho_status: it_jisho_status,
-            it_sunhal_use: it_sunhal_use,
-            it_nohalin: it_nohalin,
-            it_jisho_cate: it_jisho_cate,
-            it_color: it_color,
-            it_colorcode: it_colorcode,
-            it_img_list,
-            it_mainstan,
-            it_seq: it_seq,
-            it_ph_tongsin,
-            it_relation_item,
-            allPhInfo,
-        });
+        await axios
+            .post(serverUrl + "/item/item_update_div", {
+                it_id: item_id,
+                it_name: it_name,
+                it_subname: it_subname,
+                it_cotype: it_cotype,
+                it_dependitem: it_dependitem,
+                it_mainitem: it_mainitem,
+                it_maker: it_maker,
+                it_brand: it_brand,
+                it_model: it_model,
+                it_explan: it_explan,
+                it_price: it_price,
+                it_use: it_use,
+                it_jisho_status: it_jisho_status,
+                it_sunhal_use: it_sunhal_use,
+                it_nohalin: it_nohalin,
+                it_hignend_chk,
+                it_jisho_cate: it_jisho_cate,
+                it_color: it_color,
+                it_gongsi_model,
+                it_colorcode: it_colorcode,
+                it_img_list,
+                it_mainstan,
+                it_seq: it_seq,
+                it_ph_tongsin,
+                it_relation_item,
+                allPhInfo,
+            })
+            .then((res) => {
+                alert("완료 되었습니다.");
+                // 굳이 다시 불러올 필요 없이 이미지 리스트만 변경 합세
+                it_img_list = it_img_list.split(",");
+            })
+            .catch((err) => {
+                alert(err);
+            });
     };
 </script>
 
@@ -432,17 +466,36 @@
                         연관상품
                     </th>
                     <td class="border border-slate-400 py-2 text-left pl-3">
-                        <select
-                            class="border border-slate-400 py-1 px-3 rounded-md"
-                            on:change={get_it_realative}
-                        >
-                            <option value="">선택하세요</option>
-                            {#each allDevice as device}
-                                <option value={device.it_id}
-                                    >{device.it_subname}</option
-                                >
-                            {/each}
-                        </select>
+                        <div class="flex items-center">
+                            <select
+                                class="border border-slate-400 py-1 px-3 rounded-md mr-8"
+                                on:change={get_it_realative}
+                            >
+                                <option value="">선택하세요</option>
+                                {#each allDevice as device}
+                                    <option value={device.it_id}
+                                        >{device.it_subname}</option
+                                    >
+                                {/each}
+                            </select>
+
+                            <div>
+                                {#each it_relation_item_arr as relation_item}
+                                    <span
+                                        class="p-1 border border-zinc-400 rounded-md mr-2"
+                                        >{relation_item.itname}
+                                        <button
+                                            class="text-red-500"
+                                            value={relation_item.itname}
+                                            on:click|capture={del_relation_item}
+                                            ><i
+                                                class="fa-regular fa-circle-xmark"
+                                            /></button
+                                        >
+                                    </span>
+                                {/each}
+                            </div>
+                        </div>
                     </td>
                 </tr>
 
@@ -471,6 +524,14 @@
                             <input type="checkbox" bind:checked={it_nohalin} />
                             <span>전체할인 적용여부</span>
                         </label>
+
+                        <label class="ml-5">
+                            <input
+                                type="checkbox"
+                                bind:checked={it_hignend_chk}
+                            />
+                            <span>하이엔드 모델 적용여부</span>
+                        </label>
                     </td>
                 </tr>
 
@@ -496,6 +557,24 @@
                             on:getEditorContent={getEditorContent}
                             {modifyVal}
                         />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="border border-slate-400 py-2 w-2/12">
+                        공시 적용
+                    </th>
+                    <td class="border border-slate-400 py-2 text-left pl-3">
+                        <select
+                            bind:value={it_gongsi_model}
+                            class="border border-slate-400 py-1 rounded-md pl-2"
+                        >
+                            {#each getGongsiModels as model}
+                                <option value={model.gj_model_name}
+                                    >{model.gj_model_name}</option
+                                >
+                            {/each}
+                        </select>
                     </td>
                 </tr>
 

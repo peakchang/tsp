@@ -3,10 +3,17 @@
     export let showModal;
     export let allYog;
     export let yogVal;
+    export let changeTongStatus;
+    export let changeTongBaseYog;
 
     let yogValTemp = Number(yogVal);
     $: {
-        yogVal = yogValTemp
+        // 통신사 변경시 기본 셋팅 요금제로~~
+        if(changeTongStatus){
+            yogValTemp = changeTongBaseYog
+        }
+        changeTongStatus = false;
+        yogVal = yogValTemp;
     }
 </script>
 
@@ -41,7 +48,7 @@
                         slot="input-set"
                         value={idx}
                         bind:group={yogValTemp}
-                        on:click={() => showModal = !showModal}
+                        on:click={() => (showModal = !showModal)}
                     />
                     <div slot="inner-text">
                         <div class="text-lg">{yog.py_name}</div>

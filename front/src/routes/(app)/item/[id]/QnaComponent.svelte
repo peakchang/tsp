@@ -5,7 +5,7 @@
     }
 </script>
 
-<div class=" max-w-3xl mx-auto px-2 mb-8">
+<div class=" max-w-3xl mx-auto px-2 my-8">
     {#each Array(5) as _, i}
         <section class="py-3">
             <!-- svelte-ignore a11y-click-events-have-key-events -->
