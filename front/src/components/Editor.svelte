@@ -107,8 +107,7 @@
                         imgArr.push(fileName);
 
                         const getImgUrl = await axios.post(
-                            import.meta.env.VITE_SERVER_URL +
-                                "/board/editor_img_uploads",
+                            import.meta.env.VITE_EDITOR_IMG_UPLOAD_POST_URL,
                             imgForm,
                             {
                                 headers: {
